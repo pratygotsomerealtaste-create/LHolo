@@ -228,7 +228,10 @@ void renderProjection(
             .structureOpacity         = structureOpacity,
             .correctionFillOpacity    = correctionFillOpacity,
             .correctionOutlineOpacity = correctionOutlineOpacity,
-            .identityTransform        = identityTransform
+            .identityTransform        = identityTransform,
+            .layerDisplayMode         = layerDisplayMode,
+            .displayLayer             = displayLayer,
+            .layerAxis                = layerAxis
         };
         processProjectionOpaqueFrame(
             state,

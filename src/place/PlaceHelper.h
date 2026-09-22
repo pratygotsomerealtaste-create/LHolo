@@ -28,6 +28,8 @@ void setRangeEnabled(bool enabled);
 bool isRangeEnabled();
 void setPlacementRadius(int radius);
 int  getPlacementRadius();
+void setAutoBreakObstructions(bool enabled);
+bool isAutoBreakObstructionsEnabled();
 void setAutoPlacementBreakCooldownSeconds(int seconds);
 int  getAutoPlacementBreakCooldownSeconds();
 // Manual mode: only place while the right mouse button is held, instead of

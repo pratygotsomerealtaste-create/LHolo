@@ -290,6 +290,32 @@ struct ProjectionTarget {
     Vec3         clickPos{};  // Exact click point; chosen to reproduce the ghost.
 };
 
+bool hasSuitableBreakingTool(LocalPlayer& player, Block const& block) {
+    auto* gameMode = player.mGameMode.get().get();
+    if (!gameMode) return false;
+    auto& inventory = player.getInventory();
+    auto const& held = inventory.getItem(player.getSelectedItemSlot());
+    if (held.isNull()) return false;
+
+    // Bedrock's destroy-rate calculation is the placeholder boundary for the
+    // stricter tool-tier and enchantment validation that can be added later.
+    return gameMode->getDestroyRate(block) > 0.0f;
+}
+
+bool breakProjectedObstruction(LocalPlayer& player, BlockPos const& cell, uchar face) {
+    if (!placementState().autoBreakObstructions()) return false;
+    auto& region = player.getDimensionBlockSource();
+    if (region.getBlock(cell).isAir()) return false;
+    auto const query = projection::queryProjection(player, cell);
+    if (!query.block || !query.missing) return false;
+    if (!hasSuitableBreakingTool(player, *query.block)) return false;
+
+    auto* gameMode = player.mGameMode.get().get();
+    if (!gameMode || !gameMode->destroyBlock(cell, face)) return false;
+    placementState().setNextPlaceAt(GetTickCount64() + 200);
+    return true;
+}
+
 // Which face of a cell points most along the given (unit) direction.
 uchar faceToward(Vec3 const& v) {
     float const absX = std::abs(v.x);
@@ -383,6 +409,10 @@ std::optional<ProjectionTarget> findProjectionTarget(
 
         BlockPos const cell{x, y, z};
         if (!region.getBlock(cell).isAir()) {
+            auto const query = projection::queryProjection(player, cell);
+            if (query.block && query.missing) {
+                return ProjectionTarget{cell, cell, entryFace, query.block};
+            }
             // A real block blocks the ray. Placing into the camera-side cell
             // (the vanilla placement position) fills an adjacent ghost. Never
             // target the cell the camera itself is standing in.
@@ -590,6 +620,21 @@ bool placementPredictionMatches(
         || name == "minecraft:unpowered_comparator" || name == "minecraft:powered_comparator") {
         return sameSerializedState(predicted, ghost, "minecraft:cardinal_direction");
     }
+    // These blocks choose their orientation from the player's placement
+    // context. Their powered/toggle bits are changed by redstone or use, but
+    // the facing must match the projected state before sending the action.
+    if (name == "minecraft:observer"
+        || name == "minecraft:dropper"
+        || name == "minecraft:dispenser"
+        || name == "minecraft:hopper"
+        || name == "minecraft:piston"
+        || name == "minecraft:sticky_piston") {
+        if (!serializedState(ghost, "facing_direction").empty())
+            return sameSerializedState(predicted, ghost, "facing_direction");
+        if (!serializedState(ghost, "minecraft:facing_direction").empty())
+            return sameSerializedState(predicted, ghost, "minecraft:facing_direction");
+        return sameSerializedState(predicted, ghost, "minecraft:cardinal_direction");
+    }
     if (isTwoBlockDoor(ghost)) {
         // A door item places both cells. The lower ghost owns direction/open,
         // the upper owns the hinge. Verify direction/open/half always; the hinge
@@ -676,6 +721,10 @@ bool resolveOrientedPlacement(
             clickPos.y - static_cast<float>(at.y),
             clickPos.z - static_cast<float>(at.z),
         };
+        if (ghost.getBlockType().mMaterial.mLiquid) {
+            result = ProjectionTarget{cell, at, face, &ghost, clickPos};
+            return true;
+        }
         // BlockItem first converts the clicked support position to the target
         // placement cell, then asks the block for its permutation. Feed the same
         // target position and relative hit vector used by the item-use path.
@@ -760,6 +809,13 @@ void tickRangePlaceImpl(LocalPlayer& player, PlacementContext const& placementCo
         // Skip cells placed a moment ago until the server applies them, so a
         // cell is never placed twice mid-round-trip (the slab double-place).
         if (recentlyPlaced(cell, now)) continue;
+
+        if (!region.getBlock(cell).isAir()) {
+            (void)breakProjectedObstruction(
+                player, cell, static_cast<uchar>(Facing::Name::Up)
+            );
+            return;
+        }
 
         auto const found = findItemSlot(inventorySnapshot, *cand.block);
         if (found.slot < 0) continue;
@@ -885,6 +941,11 @@ void tickEasyPlaceImpl() {
         if (!allowed) return;
     }
     if (!target) return;
+
+    if (!player->getDimensionBlockSource().getBlock(target->cell).isAir()) {
+        (void)breakProjectedObstruction(*player, target->cell, target->face);
+        return;
+    }
 
     // Skip cells placed a moment ago until the server applies them; new cells
     // place immediately.

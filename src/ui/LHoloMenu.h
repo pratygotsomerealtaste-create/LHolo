@@ -93,6 +93,7 @@ struct MenuModel {
     bool easyPlaceEnabled{};
     bool manualPlace{};
     bool rangeEnabled{};
+    bool autoBreakObstructions{};
     bool experimentalConsent{};
     int placementRadius{4};
     int autoPlacementBreakCooldownSeconds{10};

@@ -250,6 +250,14 @@ int getPlacementRadius() {
     return placementState().radius();
 }
 
+void setAutoBreakObstructions(bool enabled) {
+    placementState().setAutoBreakObstructions(enabled);
+}
+
+bool isAutoBreakObstructionsEnabled() {
+    return placementState().autoBreakObstructions();
+}
+
 void setAutoPlacementBreakCooldownSeconds(int seconds) {
     placementState().setAutoPlacementBreakCooldownSeconds(std::clamp(seconds, 0, 60));
 }

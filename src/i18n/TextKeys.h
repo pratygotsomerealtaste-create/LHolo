@@ -171,6 +171,7 @@
     LHOLO_TEXT_KEY("checkbox.manualPlace", CheckboxManualPlace, "")                                      \
     LHOLO_TEXT_KEY("checkbox.easyPlace", CheckboxEasyPlace, "")                                          \
     LHOLO_TEXT_KEY("checkbox.rangePlace", CheckboxRangePlace, "")                                        \
+    LHOLO_TEXT_KEY("checkbox.autoBreakObstructions", CheckboxAutoBreakObstructions, "")                \
     LHOLO_TEXT_KEY("mode.manual", ModeManual, "")                                                        \
     LHOLO_TEXT_KEY("mode.easy", ModeEasy, "")                                                            \
     LHOLO_TEXT_KEY("mode.range", ModeRange, "")                                                          \

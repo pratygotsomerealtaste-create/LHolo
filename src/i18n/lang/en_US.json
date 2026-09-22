@@ -126,6 +126,7 @@
   "checkbox.manualPlace": "Manual place (right-click; hold to keep placing)",
   "checkbox.easyPlace": "Easy place (place when the crosshair is on a projected block)",
   "checkbox.rangePlace": "Range place (auto place nearby missing blocks)",
+  "checkbox.autoBreakObstructions": "Auto-clear obstructing blocks",
   "mode.manual": "Manual place",
   "mode.easy": "Easy place",
   "mode.range": "Range place",

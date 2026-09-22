@@ -126,6 +126,7 @@
   "checkbox.manualPlace": "手动放置（右键放置·按住连放）",
   "checkbox.easyPlace": "轻松放置（准心对准投影方块自动放置）",
   "checkbox.rangePlace": "范围放置（自动放置周围投影缺块）",
+  "checkbox.autoBreakObstructions": "自动清除阻挡方块",
   "mode.manual": "手动放置",
   "mode.easy": "轻松放置",
   "mode.range": "范围放置",

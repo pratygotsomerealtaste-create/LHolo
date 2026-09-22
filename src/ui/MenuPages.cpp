@@ -472,6 +472,12 @@ void renderExperimentalPage(MenuModel& model, MenuActions const& actions, UiMetr
         );
         gate(model.rangeEnabled, 3);
         if (model.rangeEnabled) { model.easyPlaceEnabled = false; model.manualPlace = false; }
+        renderCheckboxRow(
+            "##AutoBreakObstructions",
+            i18n::tr(i18n::TextKey::CheckboxAutoBreakObstructions),
+            model.autoBreakObstructions,
+            metrics
+        );
         ImGui::Dummy(ImVec2(0.0f, metrics.gap * 0.25f));
         if (model.manualPlace || model.easyPlaceEnabled || model.rangeEnabled) {
             char const* mode = model.manualPlace

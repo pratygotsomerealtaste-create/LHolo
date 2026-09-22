@@ -181,6 +181,16 @@ void buildProjectionSection(
             continue;
         }
         auto const& entry = state.structure->renderBlocks[index];
+        if (!isLayerVisible(
+                sectionBuildSettings.layerAxis == structure::LayerAxis::X ? entry.x : entry.y,
+                sectionBuildSettings.layerDisplayMode,
+                sectionBuildSettings.displayLayer,
+                entry.materialIndex,
+                entry.liquidMaterialIndex,
+                sectionBuildSettings.layerAxis
+            )) {
+            continue;
+        }
         auto const transformed = transformStructurePosition(entry, *state.structure, mirrorMode, rotationTurns);
         BlockPos const position{
             state.anchor.x + offsetX + transformed.x,

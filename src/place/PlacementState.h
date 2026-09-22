@@ -66,6 +66,8 @@ public:
     void setManualMode(bool manual);
     [[nodiscard]] int radius() const;
     void setRadius(int radius);
+    [[nodiscard]] bool autoBreakObstructions() const;
+    void setAutoBreakObstructions(bool enabled);
     [[nodiscard]] int autoPlacementBreakCooldownSeconds() const;
     void setAutoPlacementBreakCooldownSeconds(int seconds);
 
@@ -114,6 +116,7 @@ private:
     std::atomic_uint64_t mManualPressAt{0};
     std::atomic_uint64_t mLastManualPlaceAt{0};
     std::atomic_int      mRadius{4};
+    std::atomic_bool     mAutoBreakObstructions{false};
     std::atomic_int      mAutoPlacementBreakCooldownSeconds{10};
     std::atomic_uint64_t mNextPlaceAt{0};
     std::atomic_uint64_t mNextSwapAt{0};

@@ -40,6 +40,12 @@ struct PlacementItem {
 // Maps a placeable block name to a differently named inventory item. An empty
 // result means the block and its inventory item use the same name.
 [[nodiscard]] inline std::string_view placementItemName(std::string_view blockName) {
+    if (blockName == "minecraft:water" || blockName == "minecraft:flowing_water") {
+        return "minecraft:water_bucket";
+    }
+    if (blockName == "minecraft:lava" || blockName == "minecraft:flowing_lava") {
+        return "minecraft:lava_bucket";
+    }
     if (blockName == "minecraft:redstone_wire") return "minecraft:redstone";
     if (blockName == "minecraft:unpowered_comparator"
         || blockName == "minecraft:powered_comparator") {

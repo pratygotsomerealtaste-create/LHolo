@@ -11,6 +11,7 @@
 #include "mc/client/renderer/Tessellator.h"
 #include "mc/util/Mirror.h"
 #include "mc/util/Rotation.h"
+#include "structure/LayerDisplayTypes.h"
 
 class BlockSource;
 class BlockTessellator;
@@ -31,6 +32,9 @@ struct ProjectionSectionBuildSettings {
     float    correctionFillOpacity{};
     float    correctionOutlineOpacity{};
     bool     identityTransform{};
+    structure::LayerDisplayMode layerDisplayMode{structure::LayerDisplayMode::All};
+    int      displayLayer{};
+    structure::LayerAxis layerAxis{structure::LayerAxis::Y};
 };
 
 void buildProjectionSection(
