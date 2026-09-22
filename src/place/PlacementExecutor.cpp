@@ -291,7 +291,7 @@ struct ProjectionTarget {
 };
 
 bool hasSuitableBreakingTool(LocalPlayer& player, Block const& block) {
-    auto* gameMode = player.mGameMode.get().get();
+    auto* gameMode = player.mGameMode.get();
     if (!gameMode) return false;
     auto& inventory = player.getInventory();
     auto const& held = inventory.getItem(player.getSelectedItemSlot());
@@ -310,7 +310,7 @@ bool breakProjectedObstruction(LocalPlayer& player, BlockPos const& cell, uchar 
     if (!query.block || !query.missing) return false;
     if (!hasSuitableBreakingTool(player, *query.block)) return false;
 
-    auto* gameMode = player.mGameMode.get().get();
+    auto* gameMode = player.mGameMode.get();
     if (!gameMode || !gameMode->destroyBlock(cell, face)) return false;
     placementState().setNextPlaceAt(GetTickCount64() + 200);
     return true;
@@ -417,9 +417,9 @@ std::optional<ProjectionTarget> findProjectionTarget(
             // (the vanilla placement position) fills an adjacent ghost. Never
             // target the cell the camera itself is standing in.
             BlockPos const neighbor = neighborOf(cell, entryFace);
-            auto const query = projection::queryProjection(player, neighbor);
-            if (neighbor != originCell && query.block && query.missing) {
-                return ProjectionTarget{neighbor, cell, entryFace, query.block};
+            auto const neighborQuery = projection::queryProjection(player, neighbor);
+            if (neighbor != originCell && neighborQuery.block && neighborQuery.missing) {
+                return ProjectionTarget{neighbor, cell, entryFace, neighborQuery.block};
             }
             break;
         }
