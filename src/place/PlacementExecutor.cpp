@@ -53,6 +53,7 @@
 #include "mc/world/level/block/BlockType.h"
 #include "mc/world/level/block/SlabBlock.h"
 #include "mc/deps/nbt/ByteTag.h"
+#include "mc/world/level/material/Material.h"
 #include "mc/deps/nbt/CompoundTag.h"
 #include "mc/deps/nbt/IntTag.h"
 #include "mc/deps/nbt/StringTag.h"
